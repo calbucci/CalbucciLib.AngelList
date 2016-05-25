@@ -72,14 +72,9 @@ namespace CalbucciLib.AngelList
             return ExecuteGet<AngelListStartup>("/startups/" + id);
         }
 
-        public AngelListStartup GetStartup(string slug)
+        public AngelListSearchResult GetStartup(string slug)
         {
-            var qs = new Dictionary<string, object>
-            {
-                {"query", slug}
-            };
-            var ret = ExecuteGet<List<AngelListStartup>>("/search/slugs", qs);
-            return ret?.FirstOrDefault();
+            return SearchSlug(slug, AngelListEntityType.Startup);
         }
 
         // ====================================================================
@@ -119,6 +114,53 @@ namespace CalbucciLib.AngelList
             return ret != null && ret.Source != null;
         }
 
+        public AngelListIdsPage ListFollowerUserIds(int userId, int page = 1)
+        {
+            Dictionary<string, object> qs = null;
+            if (page > 1)
+            {
+                qs = new Dictionary<string, object> {["page"] = page};
+            }
+            return ExecuteGet<AngelListIdsPage>($"/users/{userId}/followers/ids", qs);
+        }
+
+        public AngelListUsersPage LisFollowerUsers(int userId, int page = 1)
+        {
+            Dictionary<string, object> qs = null;
+            if (page > 1)
+            {
+                qs = new Dictionary<string, object> {["page"] = page};
+            }
+            return ExecuteGet<AngelListUsersPage>($"/users/{userId}/followers", qs);
+        }
+
+        public AngelListIdsPage ListFollowingUserIds(int userId, int page = 1)
+        {
+            Dictionary<string, object> qs = new Dictionary<string, object>()
+            {
+                {"type", "user"}
+            };
+            if (page > 1)
+            {
+                qs["page"] = page;
+            }
+            return ExecuteGet<AngelListIdsPage>($"/users/{userId}/following/ids", qs);
+        }
+
+        public AngelListUsersPage LisFollowingUsers(int userId, int page = 1)
+        {
+            Dictionary<string, object> qs = new Dictionary<string, object>()
+            {
+                {"type", "user"}
+            };
+            if (page > 1)
+            {
+                qs["page"] = page;
+            }
+            return ExecuteGet<AngelListUsersPage>($"/users/{userId}/following", qs);
+        }
+
+
         public bool FollowStartup(int startupId)
         {
             var qs = new Dictionary<string, object>
@@ -152,8 +194,77 @@ namespace CalbucciLib.AngelList
         }
 
 
+        public AngelListIdsPage ListFollowingStartupIds(int userId, int page = 1)
+        {
+            var qs = new Dictionary<string, object>()
+            {
+                {"type", "startup"}
+            };
+            if (page > 1)
+            {
+                qs["page"] = page;
+            }
+            return ExecuteGet<AngelListIdsPage>($"/users/{userId}/following/ids", qs);
+        }
+
+        public AngelListStartupsPage LisFollowingStartups(int userId, int page = 1)
+        {
+            var qs = new Dictionary<string, object>()
+            {
+                {"type", "startup"}
+            };
+            if (page > 1)
+            {
+                qs["page"] = page;
+            }
+            return ExecuteGet<AngelListStartupsPage>($"/users/{userId}/following", qs);
+        }
+
+        public AngelListUsersPage ListStartupFollowers(int startupId, int page = 1)
+        {
+            Dictionary<string, object> qs = null;
+            if (page > 1)
+            {
+                qs = new Dictionary<string, object> { ["page"] = page };
+            }
+            return ExecuteGet<AngelListUsersPage>($"/startups/{startupId}/followers", qs);
+        }
+
+        public AngelListIdsPage ListStartupFollowerIds(int startupId, int page = 1)
+        {
+            Dictionary<string, object> qs = null;
+            if (page > 1)
+            {
+                qs = new Dictionary<string, object> { ["page"] = page };
+            }
+            return ExecuteGet<AngelListIdsPage>($"/startups/{startupId}/followers/ids", qs);
+        }
 
 
+        // ====================================================================
+        //
+        //  Search
+        //
+        // ====================================================================
+        public List<AngelListSearchResult> Search(string query, AngelListEntityType type)
+        {
+            var qs = new Dictionary<string, object>
+            {
+                {"query", query},
+                {"type", type}
+            };
+            return ExecuteGet<List<AngelListSearchResult>>("/search", qs);
+        }
+
+        public AngelListSearchResult SearchSlug(string slug, AngelListEntityType type)
+        {
+            var qs = new Dictionary<string, object>
+            {
+                {"query", slug},
+                {"type", type}
+            };
+            return ExecuteGet<AngelListSearchResult>("/search/slugs", qs);
+        }
 
 
 

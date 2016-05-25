@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CalbucciLib.AngelList.Model
 {
-    public class AngelListMarket : AngelListEntity
+    public class AngelListSkill : AngelListEntity
     {
-
+        public int? Level { get; set; }
         
     }
 }

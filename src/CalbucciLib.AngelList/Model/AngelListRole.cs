@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace CalbucciLib.AngelList.Model
 {
-    public class AngelListRole : AngelListTag
+    public class AngelListRole : AngelListEntity
     {
 
         

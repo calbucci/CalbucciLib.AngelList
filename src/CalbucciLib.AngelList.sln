@@ -5,6 +5,13 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalbucciLib.AngelList", "CalbucciLib.AngelList\CalbucciLib.AngelList.csproj", "{C3DA0150-0AEA-4E46-B194-90B821C16B3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalbucciLib.AngelList.Tests", "CalbucciLib.AngelList.Tests\CalbucciLib.AngelList.Tests.csproj", "{552C233B-9B7A-42AB-B57A-0560608680FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA019F71-A45A-4791-971A-86A1FB270F66}"
+	ProjectSection(SolutionItems) = preProject
+		AppSettingsSecrets.config = AppSettingsSecrets.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +22,10 @@ Global
 		{C3DA0150-0AEA-4E46-B194-90B821C16B3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3DA0150-0AEA-4E46-B194-90B821C16B3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3DA0150-0AEA-4E46-B194-90B821C16B3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552C233B-9B7A-42AB-B57A-0560608680FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552C233B-9B7A-42AB-B57A-0560608680FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552C233B-9B7A-42AB-B57A-0560608680FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552C233B-9B7A-42AB-B57A-0560608680FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

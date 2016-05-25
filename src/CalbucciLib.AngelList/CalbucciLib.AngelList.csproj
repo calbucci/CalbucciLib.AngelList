@@ -47,15 +47,19 @@
   <ItemGroup>
     <Compile Include="AngelListAuth.cs" />
     <Compile Include="AngelListService.cs" />
+    <Compile Include="AngelListUtils.cs" />
     <Compile Include="Model\AngelListLocation.cs" />
     <Compile Include="Model\AngelListMarket.cs" />
+    <Compile Include="Model\AngelListPagination.cs" />
     <Compile Include="Model\AngelListRelationship.cs" />
     <Compile Include="Model\AngelListRole.cs" />
     <Compile Include="Model\AngelListScope.cs" />
     <Compile Include="Model\AngelListScreenshot.cs" />
+    <Compile Include="Model\AngelListSearchResult.cs" />
+    <Compile Include="Model\AngelListSkill.cs" />
     <Compile Include="Model\AngelListStartup.cs" />
     <Compile Include="Model\AngelListStatus.cs" />
-    <Compile Include="Model\AngelListTag.cs" />
+    <Compile Include="Model\AngelListEntity.cs" />
     <Compile Include="Model\AngelListToken.cs" />
     <Compile Include="Model\AngelListUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
