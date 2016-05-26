@@ -56,8 +56,4 @@ namespace CalbucciLib.AngelList.Model
 
     }
 
-    public class AngelListUsersPage : AngelListPagination
-    {
-        public List<AngelListUserMin> Users { get; set; }
-    }
 }

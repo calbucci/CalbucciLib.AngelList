@@ -32,7 +32,7 @@ namespace CalbucciLib.AngelList.Tests
         {
             var sacca = Als.GetUser(209);
             Assert.IsNotNull(sacca);
-            Assert.AreEqual( "Chris Sacca", sacca.Name);
+            Assert.AreEqual("Chris Sacca", sacca.Name);
         }
 
         [TestMethod()]
@@ -68,99 +68,144 @@ namespace CalbucciLib.AngelList.Tests
         }
 
         [TestMethod()]
-        public void FollowUser_Test()
+        public void ListUsers_Test()
         {
-            Assert.Fail();
+            List<int> userIds = new List<int>
+            {
+                209, // sacca
+                44979, // calbucci
+            };
+
+            var users = Als.ListUsers(userIds);
+            Assert.AreEqual(userIds.Count, users.Count);
+            foreach (var user in users)
+            {
+                Assert.IsNotNull(user);
+                Assert.IsTrue(userIds.Contains(user.Id));
+            }
         }
 
+
         [TestMethod()]
-        public void UnfollowUser_Test()
+        public void FollowUser_Test()
         {
-            Assert.Fail();
+            int randomUserId = 123020; // https://angel.co/peterlthomson
+            var ret = Als.FollowUser(randomUserId);
+            Als.UnfollowUser(randomUserId); // unfollow even before the asserts to clear up for next test
+
+            Assert.IsNotNull(ret);
+            Assert.AreEqual(44979, ret.Follower.Id);
+            Assert.AreEqual(randomUserId, ret.Followed.Id);
         }
+
 
         [TestMethod()]
         public void IsFollowingUser_Test()
         {
-            Assert.Fail();
+            var ret = Als.IsFollowingUser(44979, 209);
+            Assert.IsTrue(ret);
         }
 
         [TestMethod()]
         public void ListFollowerUserIds_Test()
         {
-            Assert.Fail();
+            var ret = Als.ListFollowerUserIds(44979);
+            Assert.IsTrue(ret.Count > 1000);
+
         }
 
         [TestMethod()]
-        public void LisFollowerUsers_Test()
+        public void ListFollowerUsers_Test()
         {
-            Assert.Fail();
+            var ret = Als.ListFollowerUsers(44979);
+            Assert.IsTrue(ret.Count > 1000);
         }
 
         [TestMethod()]
         public void ListFollowingUserIds_Test()
         {
-            Assert.Fail();
+            var ret = Als.ListFollowingUserIds(44979);
+            Assert.IsTrue(ret.Count > 100);
+            Assert.IsTrue(ret.Contains(209)); // sacca
         }
 
         [TestMethod()]
-        public void LisFollowingUsers_Test()
+        public void ListFollowingUsers_Test()
         {
-            Assert.Fail();
+            var ret = Als.ListFollowingUsers(44979);
+            Assert.IsTrue(ret.Count > 100);
+            Assert.IsTrue(ret.Any(u => u.Id == 209)); // sacca
+
         }
 
         [TestMethod()]
         public void FollowStartup_Test()
         {
-            Assert.Fail();
-        }
+            int randomStartupId = 563464; // https://angel.co/bananadesk
+            var ret = Als.FollowStartup(randomStartupId);
+            Als.UnfollowStartup(randomStartupId); // clear up for next test
 
-        [TestMethod()]
-        public void UnfollowStartup_Test()
-        {
-            Assert.Fail();
+            Assert.IsNotNull(ret);
+            Assert.AreEqual(44979, ret.Follower.Id);
+            Assert.AreEqual(randomStartupId, ret.Followed.Id);
         }
 
         [TestMethod()]
         public void IsFollowingStartup_Test()
         {
-            Assert.Fail();
+            int listpediaId = 1094798;
+            var ret = Als.IsFollowingStartup(44979, listpediaId);
+            Assert.IsTrue(ret);
         }
 
         [TestMethod()]
         public void ListFollowingStartupIds_Test()
         {
-            Assert.Fail();
+            var ret = Als.ListFollowingStartupIds(44979);
+            Assert.IsTrue(ret.Count > 20);
         }
 
         [TestMethod()]
-        public void LisFollowingStartups_Test()
+        public void ListFollowingStartups_Test()
         {
-            Assert.Fail();
+            var ret = Als.ListFollowingStartups(44979);
+            Assert.IsTrue(ret.Count > 20);
         }
 
         [TestMethod()]
         public void ListStartupFollowers_Test()
         {
-            Assert.Fail();
+            int listpediaId = 1094798;
+            var ret = Als.ListStartupFollowers(listpediaId);
+            Assert.IsTrue(ret.Count > 0);
         }
 
         [TestMethod()]
         public void ListStartupFollowerIds_Test()
         {
-            Assert.Fail();
+            int listpediaId = 1094798;
+            var ret = Als.ListStartupFollowerIds(listpediaId);
+            Assert.IsTrue(ret.Count > 0);
         }
 
         [TestMethod()]
         public void Search_Test()
         {
-            Assert.Fail();
+            int listpediaId = 1094798;
+            var ret = Als.Search("listpedia", Model.AngelListEntityType.Startup);
+            Assert.IsNotNull(ret);
+            Assert.IsTrue(ret.Count > 0);
+            Assert.IsTrue(ret.Any(r => r.Id == listpediaId));
         }
 
         [TestMethod()]
         public void SearchSlug_Test()
         {
-            Assert.Fail();
+            int listpediaId = 1094798;
+            var ret = Als.SearchSlug("listpedia", Model.AngelListEntityType.Startup);
+            Assert.IsNotNull(ret);
+            Assert.IsTrue(ret.Id == listpediaId);
         }
+
     }
 }

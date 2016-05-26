@@ -8,7 +8,7 @@ namespace CalbucciLib.AngelList.Model
 {
     public class AngelListSkill : AngelListEntity
     {
-        public int? Level { get; set; }
+        public double? Level { get; set; }
         
     }
 }

@@ -76,7 +76,6 @@ namespace CalbucciLib.AngelList
                 $"https://angel.co/api/oath/token?client_id={ClientId}&client_secret={ClientSecret}&grant_type=authorization_code&code="
                                  + HttpUtility.UrlEncode(code);
 
-            string data = null;
             try
             {
                 using (var wc = new WebClient())
@@ -86,15 +85,11 @@ namespace CalbucciLib.AngelList
                     var resp = wc.UploadString(exchangeUrl, "");
 
                     var alt = JsonConvert.DeserializeObject<AngelListToken>(resp);
-                    if (string.IsNullOrWhiteSpace(alt?.AccessToken))
-                        return null;
-
-                    return alt;
+                    return string.IsNullOrWhiteSpace(alt?.AccessToken) ? null : alt;
                 }
             }
-            catch (WebException wex)
+            catch (WebException)
             {
-
                 return null;
             }
         }

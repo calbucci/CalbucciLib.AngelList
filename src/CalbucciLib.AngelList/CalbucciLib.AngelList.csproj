@@ -48,6 +48,7 @@
     <Compile Include="AngelListAuth.cs" />
     <Compile Include="AngelListService.cs" />
     <Compile Include="AngelListUtils.cs" />
+    <Compile Include="Model\AngelListFollow.cs" />
     <Compile Include="Model\AngelListLocation.cs" />
     <Compile Include="Model\AngelListMarket.cs" />
     <Compile Include="Model\AngelListPagination.cs" />

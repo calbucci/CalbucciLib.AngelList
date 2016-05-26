@@ -62,6 +62,15 @@ namespace CalbucciLib.AngelList
             return ExecuteGet<AngelListUser>("/users/search", qs);
         }
 
+        public List<AngelListUser> ListUsers(IEnumerable<int> userIds)
+        {
+            return BatchGet(userIds, GetUser);
+        }
+
+        public List<AngelListUser> ListUsers(IEnumerable<string> slugs)
+        {
+            return BatchGet(slugs, GetUser);
+        }
         // ====================================================================
         //
         //  Startups
@@ -77,19 +86,33 @@ namespace CalbucciLib.AngelList
             return SearchSlug(slug, AngelListEntityType.Startup);
         }
 
+        public List<AngelListStartup> ListStartups(IEnumerable<int> startupIds)
+        {
+            return BatchGet(startupIds, GetStartup);
+        }
+
+        public List<AngelListSearchResult> ListStartups(IEnumerable<string> slugs)
+        {
+            return BatchGet(slugs, GetStartup);
+        }
         // ====================================================================
         //
         //  Follows
         //
         // ====================================================================
-        public bool FollowUser(int userId)
+        public AngelListFollowUser FollowUser(int userId)
         {
             var qs = new Dictionary<string, object>
             {
                 {"type", "user"},
                 {"id", userId}
             };
-            return ExecutePost<string>("/follows", qs) != null;
+
+            // Unfortunately, sending a follow request if you are already 
+            // following a user returns "BadRequest" 
+            var ret = ExecutePost<AngelListFollowUser>("/follows", qs);
+            return ret;
+
         }
 
         public bool UnfollowUser(int userId)
@@ -99,7 +122,7 @@ namespace CalbucciLib.AngelList
                 {"type", "user"},
                 {"id", userId}
             };
-            return ExecuteDelete<string>("/follows", qs) != null;
+            return ExecuteDelete<AngelListFollowUser>("/follows", qs) != null;
         }
 
         public bool IsFollowingUser(int sourceUserId, int targetUserId)
@@ -107,68 +130,42 @@ namespace CalbucciLib.AngelList
             var qs = new Dictionary<string, object>
             {
                 {"source_id", sourceUserId},
-                {"target_type", "user"},
+                {"target_type", "User"},
                 {"target_id", targetUserId}
             };
             var ret = ExecuteGet<AngelListRelationship>("/follows/relationship", qs);
             return ret != null && ret.Source != null;
         }
 
-        public AngelListIdsPage ListFollowerUserIds(int userId, int page = 1)
+        public List<int> ListFollowerUserIds(int userId)
         {
-            Dictionary<string, object> qs = null;
-            if (page > 1)
-            {
-                qs = new Dictionary<string, object> {["page"] = page};
-            }
-            return ExecuteGet<AngelListIdsPage>($"/users/{userId}/followers/ids", qs);
+            return PagedGet<int>($"/users/{userId}/followers/ids");
         }
 
-        public AngelListUsersPage LisFollowerUsers(int userId, int page = 1)
+        public List<AngelListUserMin> ListFollowerUsers(int userId, int page = 1)
         {
-            Dictionary<string, object> qs = null;
-            if (page > 1)
-            {
-                qs = new Dictionary<string, object> {["page"] = page};
-            }
-            return ExecuteGet<AngelListUsersPage>($"/users/{userId}/followers", qs);
+            return PagedGet<AngelListUserMin>($"/users/{userId}/followers");
         }
 
-        public AngelListIdsPage ListFollowingUserIds(int userId, int page = 1)
+        public List<int> ListFollowingUserIds(int userId, int page = 1)
         {
-            Dictionary<string, object> qs = new Dictionary<string, object>()
-            {
-                {"type", "user"}
-            };
-            if (page > 1)
-            {
-                qs["page"] = page;
-            }
-            return ExecuteGet<AngelListIdsPage>($"/users/{userId}/following/ids", qs);
+            return PagedGet<int>($"/users/{userId}/following/ids");
         }
 
-        public AngelListUsersPage LisFollowingUsers(int userId, int page = 1)
+        public List<AngelListUserMin> ListFollowingUsers(int userId, int page = 1)
         {
-            Dictionary<string, object> qs = new Dictionary<string, object>()
-            {
-                {"type", "user"}
-            };
-            if (page > 1)
-            {
-                qs["page"] = page;
-            }
-            return ExecuteGet<AngelListUsersPage>($"/users/{userId}/following", qs);
+            return PagedGet<AngelListUserMin>($"/users/{userId}/following");
         }
 
 
-        public bool FollowStartup(int startupId)
+        public AngelListFollowStartup FollowStartup(int startupId)
         {
             var qs = new Dictionary<string, object>
             {
                 {"type", "startup"},
                 {"id", startupId}
             };
-            return ExecutePost<string>("/follows", qs) != null;
+            return ExecutePost<AngelListFollowStartup>("/follows", qs);
         }
 
         public bool UnfollowStartup(int startupId)
@@ -178,7 +175,7 @@ namespace CalbucciLib.AngelList
                 {"type", "startup"},
                 {"id", startupId}
             };
-            return ExecuteDelete<string>("/follows", qs) != null;
+            return ExecuteDelete<AngelListFollowStartup>("/follows", qs) != null;
         }
 
         public bool IsFollowingStartup(int userId, int startupId)
@@ -186,7 +183,7 @@ namespace CalbucciLib.AngelList
             var qs = new Dictionary<string, object>
             {
                 {"source_id", userId},
-                {"target_type", "user"},
+                {"target_type", "Startup"},
                 {"target_id", startupId}
             };
             var ret = ExecuteGet<AngelListRelationship>("/follows/relationship", qs);
@@ -194,50 +191,24 @@ namespace CalbucciLib.AngelList
         }
 
 
-        public AngelListIdsPage ListFollowingStartupIds(int userId, int page = 1)
+        public List<int> ListFollowingStartupIds(int userId)
         {
-            var qs = new Dictionary<string, object>()
-            {
-                {"type", "startup"}
-            };
-            if (page > 1)
-            {
-                qs["page"] = page;
-            }
-            return ExecuteGet<AngelListIdsPage>($"/users/{userId}/following/ids", qs);
+            return PagedGet<int>($"/users/{userId}/following/ids", "startup");
         }
 
-        public AngelListStartupsPage LisFollowingStartups(int userId, int page = 1)
+        public List<AngelListStartupMin> ListFollowingStartups(int userId)
         {
-            var qs = new Dictionary<string, object>()
-            {
-                {"type", "startup"}
-            };
-            if (page > 1)
-            {
-                qs["page"] = page;
-            }
-            return ExecuteGet<AngelListStartupsPage>($"/users/{userId}/following", qs);
+            return PagedGet<AngelListStartupMin>($"/users/{userId}/following", "startup");
         }
 
-        public AngelListUsersPage ListStartupFollowers(int startupId, int page = 1)
+        public List<AngelListUserMin> ListStartupFollowers(int startupId)
         {
-            Dictionary<string, object> qs = null;
-            if (page > 1)
-            {
-                qs = new Dictionary<string, object> { ["page"] = page };
-            }
-            return ExecuteGet<AngelListUsersPage>($"/startups/{startupId}/followers", qs);
+            return PagedGet<AngelListUserMin>($"/startups/{startupId}/followers");
         }
 
-        public AngelListIdsPage ListStartupFollowerIds(int startupId, int page = 1)
+        public List<int> ListStartupFollowerIds(int startupId)
         {
-            Dictionary<string, object> qs = null;
-            if (page > 1)
-            {
-                qs = new Dictionary<string, object> { ["page"] = page };
-            }
-            return ExecuteGet<AngelListIdsPage>($"/startups/{startupId}/followers/ids", qs);
+            return PagedGet<int>($"/startups/{startupId}/followers/ids");
         }
 
 
@@ -264,6 +235,73 @@ namespace CalbucciLib.AngelList
                 {"type", type}
             };
             return ExecuteGet<AngelListSearchResult>("/search/slugs", qs);
+        }
+
+
+        // ====================================================================
+        //
+        //  Batch & Page helpers
+        //
+        // ====================================================================
+        public List<T> BatchGet<T, K>(IEnumerable<K> items, Func<K, T> method) where T : class
+        {
+            if (items == null || !items.Any())
+                return new List<T>();
+
+            var tasks = new List<Task<T>>();
+            foreach (var item in items)
+            {
+                var item2 = item; // avoid closure issues
+
+                // BUG: This class is not thread-safe due to LastXYZ properties, but on 
+                //      this particular call we don't care.
+                var task = Task.Run<T>(() =>
+                {
+                    try
+                    {
+                        var alu = method(item2);
+                        return alu;
+                    }
+                    catch { return null; }
+                });
+                tasks.Add(task);
+            }
+
+            try
+            {
+                Task.WaitAll(tasks.ToArray());
+            }
+            catch { }
+
+            var results = tasks.Where(t => t.IsCompleted && !t.IsFaulted && !t.IsCanceled)
+                .Select(t => t.Result).Where(r => r != null).ToList();
+
+            return results;
+        }
+
+        public List<T> PagedGet<T>(string endPoint, string type = null)
+        {
+            // TODO: Since AngelList uses numbered pages instead of a cursor, we could just
+            //       ask for all the pages at the same time and improve on the async calls
+            List<T> results = new List<T>();
+            int pageNum = 1;
+            do
+            {
+                var qs = new Dictionary<string, object> { ["page"] = pageNum };
+                if (type != null)
+                    qs["type"] = type;
+                var page = ExecuteGet<AngelListPagination<T>>(endPoint, qs);
+                if (page?.Items == null || !page.Items.Any())
+                    break;
+
+                results.AddRange(page.Items);
+                pageNum = page.Page + 1;
+                if (pageNum > page.LastPage)
+                    break;
+            } while (true);
+
+            return results;
+
         }
 
 
