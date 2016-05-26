@@ -20,11 +20,10 @@ namespace CalbucciLib.AngelList
         //
         // ====================================================================
 
-        public AngelListAuth(string clientId, string clientSecret, string redirectUri)
+        public AngelListAuth(string clientId, string clientSecret)
         {
             ClientId = clientId;
             ClientSecret = clientSecret;
-            RedirectUri = redirectUri;
         }
 
 
@@ -127,7 +126,6 @@ namespace CalbucciLib.AngelList
         public AngelListScope DefaultScopes { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
-        public string RedirectUri { get; set; }
 
     }
 
