@@ -25,6 +25,7 @@ namespace CalbucciLib.AngelList.Tests
             var me = Als.GetMe();
             Assert.IsNotNull(me);
             Assert.AreEqual("Marcelo Calbucci", me.Name);
+            Assert.IsNotNull(me.Email);
         }
 
         [TestMethod()]

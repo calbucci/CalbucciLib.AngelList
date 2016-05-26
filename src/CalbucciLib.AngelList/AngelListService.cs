@@ -142,17 +142,17 @@ namespace CalbucciLib.AngelList
             return PagedGet<int>($"/users/{userId}/followers/ids");
         }
 
-        public List<AngelListUserMin> ListFollowerUsers(int userId, int page = 1)
+        public List<AngelListUserMin> ListFollowerUsers(int userId)
         {
             return PagedGet<AngelListUserMin>($"/users/{userId}/followers");
         }
 
-        public List<int> ListFollowingUserIds(int userId, int page = 1)
+        public List<int> ListFollowingUserIds(int userId)
         {
             return PagedGet<int>($"/users/{userId}/following/ids");
         }
 
-        public List<AngelListUserMin> ListFollowingUsers(int userId, int page = 1)
+        public List<AngelListUserMin> ListFollowingUsers(int userId)
         {
             return PagedGet<AngelListUserMin>($"/users/{userId}/following");
         }

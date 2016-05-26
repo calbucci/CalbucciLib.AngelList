@@ -22,6 +22,7 @@ namespace CalbucciLib.AngelList.Model
 
     public class AngelListUser : AngelListUserMin
     {
+        public string Email { get; set; }
         [JsonProperty("blog_url")]
         public string BlogUrl { get; set; }
         [JsonProperty("online_bio_url")]
