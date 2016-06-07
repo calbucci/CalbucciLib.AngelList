@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -71,24 +72,31 @@ namespace CalbucciLib.AngelList
             if (string.IsNullOrEmpty(code))
                 return null;
 
+            string data =
+                $"client_id={ClientId}&client_secret={ClientSecret}&grant_type=authorization_code&code={HttpUtility.UrlEncode(code)}";
+                                 
+
             string exchangeUrl =
-                $"https://angel.co/api/oath/token?client_id={ClientId}&client_secret={ClientSecret}&grant_type=authorization_code&code="
-                                 + HttpUtility.UrlEncode(code);
+                "https://angel.co/api/oauth/token";
 
             try
             {
                 using (var wc = new WebClient())
                 {
                     wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    wc.Headers[HttpRequestHeader.UserAgent] = "ListpediaBot";
+                    wc.Headers[HttpRequestHeader.Accept] = "*/*";
 
-                    var resp = wc.UploadString(exchangeUrl, "");
+                    var resp = wc.UploadString(exchangeUrl, data);
 
                     var alt = JsonConvert.DeserializeObject<AngelListToken>(resp);
                     return string.IsNullOrWhiteSpace(alt?.AccessToken) ? null : alt;
                 }
             }
-            catch (WebException)
+            catch (WebException wex)
             {
+                Debug.WriteLine(wex);
+
                 return null;
             }
         }

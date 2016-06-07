@@ -176,7 +176,7 @@ namespace CalbucciLib.AngelList
                 {"id", startupId}
             };
             return ExecuteDelete<AngelListFollowStartup>("/follows", qs) != null;
-        }
+        } 
 
         public bool IsFollowingStartup(int userId, int startupId)
         {

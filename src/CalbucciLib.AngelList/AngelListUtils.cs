@@ -48,23 +48,20 @@ namespace CalbucciLib.AngelList
 
         public static string GetSlug(string angelListUrl)
         {
-            if (string.IsNullOrWhiteSpace(angelListUrl))
+            if (string.IsNullOrWhiteSpace(angelListUrl) || !Uri.IsWellFormedUriString(angelListUrl, UriKind.Absolute))
                 return null;
 
             // https://angel.co/calbucci
-            if (angelListUrl.StartsWith(AngelListBaseUrl, StringComparison.CurrentCultureIgnoreCase))
+            var uri = new Uri(angelListUrl);
+            if (!uri.Host.Equals("angel.co", StringComparison.CurrentCultureIgnoreCase)
+                && !uri.Host.Equals("www.angel.co", StringComparison.CurrentCultureIgnoreCase))
                 return null;
 
-            int pos = angelListUrl.IndexOfAny(new char[] { '/', '?', '#'}, AngelListBaseUrl.Length);
-            string slug = null;
-            if (pos > 0)
-            {
-                slug = angelListUrl.Substring(AngelListBaseUrl.Length, pos - AngelListBaseUrl.Length);
-            }
-            else
-            {
-                slug = angelListUrl.Substring(AngelListBaseUrl.Length);
-            }
+            if (uri.Segments.Length < 2)
+                return null;
+
+            var slug = uri.Segments[1].Trim('/');
+
             if (!IsValidSlug(slug))
                 return null;
             return slug;
@@ -122,43 +119,16 @@ namespace CalbucciLib.AngelList
             if (linkOrSlug.StartsWith("@"))
                 linkOrSlug = linkOrSlug.Substring(1);
 
-            string slug = linkOrSlug;
-            if (IsValidSlug(slug))
-                return slug;
+            if (IsValidSlug(linkOrSlug))
+                return linkOrSlug;
 
             if (linkOrSlug.Length > 16)
             {
-                // It's probably a link
-                if (!IsAngelListLink(linkOrSlug))
-                    return null;
-
-                try
-                {
-                    Uri link;
-                    if (!Uri.TryCreate(linkOrSlug, UriKind.Absolute, out link))
-                        return null;
-
-                    if (link.Segments.Length == 0)
-                        return null;
-
-                    slug = link.Segments[1];
-                    if (string.IsNullOrEmpty(slug))
-                        return null;
-
-                    if (slug.EndsWith("/"))
-                        slug = slug.Substring(0, slug.Length - 1);
-
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
+                return GetSlug(linkOrSlug);
             }
 
-            if (!IsValidSlug(slug))
-                return null;
+            return null;
 
-            return slug;
         }
 
     }

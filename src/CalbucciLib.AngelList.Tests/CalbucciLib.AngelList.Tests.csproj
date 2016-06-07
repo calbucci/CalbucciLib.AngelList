@@ -53,6 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AngelListService_Tests.cs" />
+    <Compile Include="AngelListUtils_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
